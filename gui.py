@@ -1,7 +1,5 @@
 import tkinter as tk
-from tkinter import ttk
-from tkinter import filedialog
-from tkinter import messagebox
+from tkinter import ttk, filedialog, messagebox
 import numpy as np
 import matplotlib
 matplotlib.use('TkAgg')
@@ -10,15 +8,8 @@ from matplotlib.figure import Figure
 
 import pandas as pd
 import matplotlib.pyplot as plt
-from scipy.signal import butter, filtfilt, detrend
-from scipy.fft import fft, fftfreq
-from scipy.fft import fftshift
-# from scipy.signal import detrend
-
-
-# from scipy.signal import butter, filtfilt, fft, fftfreq, detrend
-
-# Define the CSV file name
+from scipy.signal import butter, filtfilt, detrend, lfilter
+from scipy.fft import fft, fftfreq, fftshift
 csv = 'out_500.csv'
 
 # Initialize the main window
@@ -91,6 +82,14 @@ def plot_signal(filename, column_name, scan_enabled, fft_enabled):
     cutoff = 5000
     y_filtered = butter_lowpass_filter(y, cutoff, fs)
 
+    # # Design a low-pass filter with a cutoff frequency of 5 kHz
+    # fc = 5000 # Cutoff frequency in Hz
+    # w = fc / (fs / 2) # Normalized cutoff frequency
+    # b, a = butter(4, w, "low") # 4th order low-pass filter
+
+    # # Apply the filter to the noisy signal
+    # y_filtered = lfilter(b, a, y_filtered)
+
     y_detrended = detrend(y_filtered)
     y_detrended -= np.mean(y_detrended)
 
@@ -131,17 +130,21 @@ def plot_signal(filename, column_name, scan_enabled, fft_enabled):
                 xy=(time[idx_peak], y_filtered[idx_peak]),
                 xytext=(time[idx_peak]+0.1, y_filtered[idx_peak]),
                 arrowprops=dict(facecolor='blue', shrink=0.05))
-    plt.text(0.9, -0.1, f'Peak Frequency: {peak_freq:.2f} Hz',
-             fontsize=14, fontweight='bold', ha='center', va='center', transform=plt.gca().transAxes)
+    plt.text(0.9, -0.1, f'Peak Freq.: {peak_freq:.2f} Hz',
+             fontsize=12, fontweight='bold', ha='center', va='center', transform=plt.gca().transAxes)
     plt.legend()
     plt.grid()
     plt.show()
 
 def scan_and_adjust_axes(x, y):
     max_y = max(y)
+    min_y = min(y)
     max_x = x[np.argmax(y)] 
+    print(max_y)
     plt.xlim(max_x - max_x/152, max_x + max_x/152)
+    plt.ylim(max_y, min_y)
 
+    # plt.xlim(max_x - max_x/152, max_x + max_x/152)
 # Create a frame for the buttons
 button_frame = tk.Frame(root)
 button_frame.pack(side=tk.TOP, fill=tk.X)
