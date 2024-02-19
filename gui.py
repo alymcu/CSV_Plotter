@@ -21,9 +21,10 @@ channels = ['CH' + str(i) for i in range(1, 13)]
 
 # Define the style for the ttk widgets
 style = ttk.Style()
-style.configure('TButton', font=('Arial', 10), background='blue', foreground='white')
-style.configure('TRadiobutton', font=('Arial', 10))
-style.configure('TCheckbutton', font=('Arial', 10))
+# style.configure('TButton', font=('Arial', 10), background='blue', foreground='white')
+# style.configure('TRadiobutton', font=('Arial', 10))
+# style.configure('TCheckbutton', font=('Arial', 10))
+# Rem above lines for better button view in windows
 
 # Function to browse and select a file
 def browse_file():
